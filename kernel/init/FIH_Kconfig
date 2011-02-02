@@ -1,0 +1,1071 @@
+menuconfig FIH_CONFIG_GROUP
+    bool "FIH Configurations Group"
+    default y
+    help
+        Turn on this group to enable FIH's configurations menu
+
+if FIH_CONFIG_GROUP
+    comment "FIH Project Flags for FIH_CONFIG_GROUP"
+
+    config FIH_MODEL_ID_ENV
+        int
+        option env="customer_id"
+
+    config FIH_MODEL_ID
+        int
+        default FIH_MODEL_ID_ENV if ! FIH_MODEL_ID_ENV = ""
+        default 0 if FIH_MODEL_ID_ENV = ""
+
+    config FIH_ANDROID_BRANCH_NAME
+        string
+        option env="ANDROID_BRANCH"
+
+    config FIH_BSP_FROYO
+        bool
+        default y if FIH_ANDROID_BRANCH_NAME = "froyo"
+        default n
+        help
+            Enable flag for froyo
+
+    config FIH_PROJECT_SAX
+        bool
+        help
+        Enable the board support to SAX
+    config FIH_FXX
+        bool
+        default y
+
+    config FIH_BUILDTYPE_DEBUG
+        bool "Enable Build Type for Debug (Turn off this flag if you need a Release type)"
+        default y
+
+    choice
+        prompt "Select a project name"
+        default FIH_PROJECT_SA4I3
+        config FIH_PROJECT_SA4I3
+            bool "SA4I3"
+            select FIH_PROJECT_SAX
+            help
+                Enable the support for SA4I3
+        config FIH_PROJECT_SA401
+            bool "SA401"
+            select FIH_PROJECT_SAX
+            help
+                Enable the support for SA401
+        config FIH_PROJECT_F0X
+            bool "F0X"
+            select FIH_FXX
+            help
+                Enable the support for F0X
+
+        config FIH_PROJECT_FA3
+            bool "FA3"
+            select FIH_FXX
+            help
+                Enable the support for FA3
+
+        config FIH_PROJECT_FM6
+            bool "FM6"
+            select FIH_FXX
+            help
+                Enable the support for FM6
+
+        config FIH_PROJECT_FN6
+            bool "FN6"
+            select FIH_FXX
+            help
+                Enable the support for FN6
+
+        config FIH_PROJECT_SA4H7
+            bool "SA4H7"
+            select FIH_PROJECT_SAX
+            help
+                Enable the support for SA4H7
+    endchoice
+
+    # Project configurations for SA401
+    menu "Configurations for SA401"
+        depends on FIH_PROJECT_SA401
+        choice
+            prompt "<SAMPLE>Sleect A Customer ID"
+            default ID_0000
+            config ID_0000
+                bool "ID: 0000, Customer: Generic"
+            config ID_0001
+                bool "ID: 0001, Customer: others"
+        endchoice
+
+        config FIH_LEDS_MPP
+            bool "FIH MPP Leds(Orange/Green)"
+            default y
+            depends on FIH_CONFIG_GROUP
+            help
+                Select if the FIH MPP Led functions are attached.
+
+        config FIH_GPIO_KEYPAD
+            bool "FIH GPIO keypad"
+            depends on INPUT_GPIO = "y" && FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the GPIO keypad is attached.
+
+        config FIH_TOUCHSCREEN
+            bool "FIH TOUCHSCREEN"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the touch panel is attached.
+
+        config FIH_TOUCHSCREEN_ATMEL_QT602240
+            bool "ATMEL QT602240 Touchscreen"
+            depends on I2C && FIH_TOUCHSCREEN
+            default y
+            help
+                Select if the Atmel qt602240 touch panel is attached.
+
+        config FIH_TOUCHSCREEN_FT5201
+            bool "FT5201 Touchscreen"
+            depends on I2C && FIH_TOUCHSCREEN
+            default y
+            help
+                Select if you want to support a FT5201 touch screen device.
+
+        config FIH_MINITRACKBALL
+            bool "FIH MINI TRACKBALL"
+            depends on FIH_CONFIG_GROUP
+            default n
+            help
+                Say Y here if you want support for the Mini-Trackball/Jogball devices.
+
+        config FIH_ECOMPASS
+            bool "FIH ECOMPASS"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the FIH Ecompass is attached.
+
+        config FIH_LPSENSOR
+            bool "FIH Light and Proximity Sensor"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the FIH light and proximity sensors are attached.
+
+        config FIH_PMIC_VIB
+            bool "FIH PMIC Vibrator"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the PMIC vibrator is attached.
+
+        config FIH_ATHEROS_WIFI
+            bool "FIH ATHEROS WIFI for SAX Project"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the Atheros Wireless Network is attached.
+
+        config FIH_QUALCOMM_BT
+            bool "FIH Qualcomm Bluebooth for SAX Project"
+            depends on FIH_CONFIG_GROUP && BT
+            default y
+            help
+                Select if the Qualcomm Bluebooth is attached.
+
+        config FIH_SDMMC
+            bool "FIH SDMMC"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the FIH SD functions are attached.
+
+        config FIH_USB_VID_PID
+            bool "FIH_USB_VID_PID"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Customize USB pid/vid for FIH SAX device.
+
+        config FIH_USB_CDROM_IMG
+            bool "FIH_USB_CDROM_IMG"
+            depends on FIH_USB_VID_PID
+            default n
+            help
+                Enable a virtual CD-ROM function with image inserted which contains drivers and APs.
+
+        config FIH_USB_CAR_CHARGER
+            bool "FIH_USB_CAR_CHARGER"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                To support car charger with its D+/D- opened, let DUT draws 500 mA when detecting charger type is HOST_PC without USB enumeration.
+
+        config FIH_OV5642
+            bool "FIH Sensor ov5642 (YUV 5M)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH OV 5M YUV Sensor with EDOF
+
+        config FIH_BATTERY_DS2786
+            bool "FIH BATTERY GAS GAUGE, DS2786."
+            depends on I2C
+            default n
+            help
+                Select if the DS2786 is used.
+    endmenu
+
+    # Project configurations for SA4I3
+    menu "Configurations for SA4I3"
+        depends on FIH_PROJECT_SA4I3
+        choice
+            prompt "<SAMPLE>Sleect A Customer ID"
+            default ID_0000
+            config ID_0000
+                bool "ID: 0000, Customer: Generic"
+            config ID_0001
+                bool "ID: 0001, Customer: others"
+        endchoice
+
+        config FIH_LEDS_MPP
+            bool "FIH MPP Leds(Orange/Green)"
+            default y
+            depends on FIH_CONFIG_GROUP
+            help
+                Select if the FIH MPP Led functions are attached.
+
+        config FIH_MCU_LEDS
+            bool "FIH MCU Leds"
+            default y
+            depends on FIH_LEDS_MPP
+            help
+                Select if the FIH MCU Led functions are attached.
+
+        config FIH_GPIO_KEYPAD
+            bool "FIH GPIO keypad"
+            depends on INPUT_GPIO = "y" && FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the GPIO keypad is attached.
+
+        config FIH_TOUCHSCREEN
+            bool "FIH TOUCHSCREEN"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the touch panel is attached.
+
+        config FIH_TOUCHSCREEN_ATMEL_QT602240
+            bool "ATMEL QT602240 Touchscreen"
+            depends on I2C && FIH_TOUCHSCREEN
+            default y
+            help
+                Select if the Atmel qt602240 touch panel is attached.
+
+        config FIH_TOUCHSCREEN_FT5201
+            bool "FT5201 Touchscreen"
+            depends on I2C && FIH_TOUCHSCREEN
+            default y
+            help
+                Select if you want to support a FT5201 touch screen device.
+
+        config FIH_MINITRACKBALL
+            bool "FIH MINI TRACKBALL"
+            depends on FIH_CONFIG_GROUP
+            default n
+            help
+                Say Y here if you want support for the Mini-Trackball/Jogball devices.
+
+        config INPUT_BMA150
+            tristate "Bosch Sensortec BMA150 Acceleration Sensor"
+            depends on I2C
+
+        config INPUT_BMA150_POSITION
+            int "BMA150 Mounting Position on Board"
+            depends on INPUT_BMA150
+            default "0"
+            help
+                Chip mounting position (pin 1).
+                0: top, upper-left
+                1: top, upper-right
+                2: top, lower-right
+                3: top, lower-left
+                4: bottom, upper-left
+                5: bottom, upper-right
+                6: bottom, lower-right
+                7: bottom, lower-left
+
+        config INPUT_YAS529
+            tristate "Yamaha YAS529 Geomagnetic Sensor"
+            depends on I2C
+        
+        config INPUT_YAS529_POSITION
+            int "YAS529 Mounting Position on Board"
+            depends on INPUT_YAS529
+            default "0"
+            help
+                Chip mounting position (pin 1).
+                0: top, upper-left
+                1: top, upper-right
+                2: top, lower-right
+                3: top, lower-left
+                4: bottom, upper-left
+                5: bottom, upper-right
+                6: bottom, lower-right
+                7: bottom, lower-left
+        
+        config INPUT_ORIENTATION
+            tristate "Yamaha Orientation Sensor"
+            depends on I2C
+
+        config INPUT_CM3602
+            tristate "Capella CM3602 Light Sensor"
+            depends on I2C
+
+        config FIH_PMIC_VIB
+            bool "FIH PMIC Vibrator"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the PMIC vibrator is attached.
+
+        config FIH_ATHEROS_WIFI
+            bool "FIH ATHEROS WIFI for SAX Project"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the Atheros Wireless Network is attached.
+
+        config FIH_QUALCOMM_BT
+            bool "FIH Qualcomm Bluebooth for SAX Project"
+            depends on FIH_CONFIG_GROUP && BT
+            default y
+            help
+                Select if the Qualcomm Bluebooth is attached.
+
+        config FIH_SDMMC
+            bool "FIH SDMMC"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the FIH SD functions are attached.
+
+        config FIH_USB_VID_PID
+            bool "FIH_USB_VID_PID"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Customize USB pid/vid for FIH SAX device.
+
+        config FIH_USB_CDROM_IMG
+            bool "FIH_USB_CDROM_IMG"
+            depends on FIH_USB_VID_PID
+            default n
+            help
+                Enable a virtual CD-ROM function with image inserted which contains drivers and APs.
+
+        config FIH_USB_CAR_CHARGER
+            bool "FIH_USB_CAR_CHARGER"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                To support car charger with its D+/D- opened, let DUT draws 500 mA when detecting charger type is HOST_PC without USB enumeration.
+
+        config FIH_OV5642
+            bool "FIH Sensor ov5642 (YUV 5M)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH OV 5M YUV Sensor with EDOF
+
+        config FIH_MT9P111
+            bool "FIH APtina Sensor mt9p111 (YUV 5M)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default n
+            help
+                FIH Aptina 5M YUV Sensor with AF                
+
+        config FIH_BATTERY_DS2786
+            bool "FIH BATTERY GAS GAUGE, DS2786."
+            depends on I2C
+            default n
+            help
+                Select if the DS2786 is used.
+
+        config FIH_BATTERY_LEVEL_CONVERT
+            bool "Convert capacity to ten-level."
+            depends on FIH_BATTERY_DS2786
+            default n
+            help
+                Say Y here to enable capacity convert action.
+
+        config FIH_CHARGER_TYPE_FROM_USB
+            bool "Get charger type from usb."
+            depends on FIH_BATTERY_DS2786
+            default n
+            help
+                Say Y here to get the charger type from usb.
+
+        config FIH_RECOVERY_NORMAL_KEY_BEHAVIOR
+            bool "FIH RECOVERY NORMAL KEY BEHAVIOR."
+            default y
+            help
+                Select if RECOVERY NORMAL KEY BEHAVIOR is used.
+
+        config FIH_RECOVERY_BACK_KEY_AS_SELECT_ITEM
+            bool "FIH RECOVERY BACK_KEY AS SELECT_ITEM."
+            default y
+            help
+                Select if RECOVERY MODE BACK_KEY AS SELECT_ITEM is used.
+
+        config FIH_CLASS_STYLE_BATTERY_CAPACITY_FILE
+            bool "FIH CLASS STYLE BATTERY CAPACITY FILE."
+            default y
+            help
+                Select if CLASS STYLE BATTERY CAPACITY FILE is used.
+
+    endmenu
+
+    # Project configurations for SA4H7
+    menu "Configurations for SA4H7"
+        depends on FIH_PROJECT_SA4H7
+        choice
+            prompt "<SAMPLE>Sleect A Customer ID"
+            default ID_0000
+            config ID_0000
+                bool "ID: 0000, Customer: Generic"
+            config ID_0001
+                bool "ID: 0001, Customer: others"
+        endchoice
+
+        config FIH_LEDS_MPP
+            bool "FIH MPP Leds(Orange/Green)"
+            default y
+            depends on FIH_CONFIG_GROUP
+            help
+                Select if the FIH MPP Led functions are attached.
+
+        config FIH_MCU_LEDS
+            bool "FIH MCU Leds"
+            default y
+            depends on FIH_LEDS_MPP
+            help
+                Select if the FIH MCU Led functions are attached.
+
+        config FIH_GPIO_KEYPAD
+            bool "FIH GPIO keypad"
+            depends on INPUT_GPIO = "y" && FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the GPIO keypad is attached.
+
+        config FIH_TOUCHSCREEN
+            bool "FIH TOUCHSCREEN"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the touch panel is attached.
+
+        config FIH_TOUCHSCREEN_ATMEL_QT602240
+            bool "ATMEL QT602240 Touchscreen"
+            depends on I2C && FIH_TOUCHSCREEN
+            default y
+            help
+                Select if the Atmel qt602240 touch panel is attached.
+
+        config FIH_TOUCHSCREEN_FT5201
+            bool "FT5201 Touchscreen"
+            depends on I2C && FIH_TOUCHSCREEN
+            default y
+            help
+                Select if you want to support a FT5201 touch screen device.
+
+        config FIH_MINITRACKBALL
+            bool "FIH MINI TRACKBALL"
+            depends on FIH_CONFIG_GROUP
+            default n
+            help
+                Say Y here if you want support for the Mini-Trackball/Jogball devices.
+
+        config INPUT_BMA150
+            tristate "Bosch Sensortec BMA150 Acceleration Sensor"
+            depends on I2C
+
+        config INPUT_BMA150_POSITION
+            int "BMA150 Mounting Position on Board"
+            depends on INPUT_BMA150
+            default "0"
+            help
+                Chip mounting position (pin 1).
+                0: top, upper-left
+                1: top, upper-right
+                2: top, lower-right
+                3: top, lower-left
+                4: bottom, upper-left
+                5: bottom, upper-right
+                6: bottom, lower-right
+                7: bottom, lower-left
+
+        config INPUT_YAS529
+            tristate "Yamaha YAS529 Geomagnetic Sensor"
+            depends on I2C
+        
+        config INPUT_YAS529_POSITION
+            int "YAS529 Mounting Position on Board"
+            depends on INPUT_YAS529
+            default "0"
+            help
+                Chip mounting position (pin 1).
+                0: top, upper-left
+                1: top, upper-right
+                2: top, lower-right
+                3: top, lower-left
+                4: bottom, upper-left
+                5: bottom, upper-right
+                6: bottom, lower-right
+                7: bottom, lower-left
+        
+        config INPUT_ORIENTATION
+            tristate "Yamaha Orientation Sensor"
+            depends on I2C
+
+        config INPUT_CM3602
+            tristate "Capella CM3602 Light Sensor"
+            depends on I2C
+
+        config FIH_SENSOR_AXK8L10125BG
+            bool "FIH AXK8L10125BG Life Sensor Driver"
+            depends on FIH_CONFIG_GROUP
+            help
+              If you say yes here you get support for the AXK8L10125BG life sensor
+ 
+              This driver can also bebuilt as a module. If so, the module
+              will be called axk8l10125bg.
+
+        config FIH_PMIC_VIB
+            bool "FIH PMIC Vibrator"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the PMIC vibrator is attached.
+
+        config FIH_ATHEROS_WIFI
+            bool "FIH ATHEROS WIFI for SAX Project"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the Atheros Wireless Network is attached.
+
+        config FIH_QUALCOMM_BT
+            bool "FIH Qualcomm Bluebooth for SAX Project"
+            depends on FIH_CONFIG_GROUP && BT
+            default y
+            help
+                Select if the Qualcomm Bluebooth is attached.
+
+        config FIH_SDMMC
+            bool "FIH SDMMC"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Select if the FIH SD functions are attached.
+
+        config FIH_USB_VID_PID
+            bool "FIH_USB_VID_PID"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Customize USB pid/vid for FIH SAX device.
+
+        config FIH_USB_CDROM_IMG
+            bool "FIH_USB_CDROM_IMG"
+            depends on FIH_USB_VID_PID
+            default n
+            help
+                Enable a virtual CD-ROM function with image inserted which contains drivers and APs.
+
+        config FIH_USB_CAR_CHARGER
+            bool "FIH_USB_CAR_CHARGER"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                To support car charger with its D+/D- opened, let DUT draws 500 mA when detecting charger type is HOST_PC without USB enumeration.
+
+        config FIH_MT9P111
+            bool "FIH APtina Sensor mt9p111 (YUV 5M)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default n
+            help
+                FIH Aptina 5M YUV Sensor with AF                
+
+        config FIH_HM0356
+            bool "FIH Himax Sensor hm0356 (YUV VGA)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default n
+            help
+                FIH Himax VGA YUV Sensor
+
+        config FIH_BATTERY_DS2786
+            bool "FIH BATTERY GAS GAUGE, DS2786."
+            depends on I2C
+            default n
+            help
+                Select if the DS2786 is used.
+
+        config FIH_BATTERY_LEVEL_CONVERT
+            bool "Convert capacity to ten-level."
+            depends on FIH_BATTERY_DS2786
+            default n
+            help
+                Say Y here to enable capacity convert action.
+
+        config FIH_CHARGER_TYPE_FROM_USB
+            bool "Get charger type from usb."
+            depends on FIH_BATTERY_DS2786
+            default n
+            help
+                Say Y here to get the charger type from usb.
+
+        config FIH_RECOVERY_NORMAL_KEY_BEHAVIOR
+            bool "FIH RECOVERY NORMAL KEY BEHAVIOR."
+            default y
+            help
+                Select if RECOVERY NORMAL KEY BEHAVIOR is used.
+
+        config FIH_RECOVERY_BACK_KEY_AS_SELECT_ITEM
+            bool "FIH RECOVERY BACK_KEY AS SELECT_ITEM."
+            default y
+            help
+                Select if RECOVERY MODE BACK_KEY AS SELECT_ITEM is used.
+
+        config FIH_CLASS_STYLE_BATTERY_CAPACITY_FILE
+            bool "FIH CLASS STYLE BATTERY CAPACITY FILE."
+            default y
+            help
+                Select if CLASS STYLE BATTERY CAPACITY FILE is used.
+
+    endmenu
+
+    # Project configurations for F0X
+    menu "Configurations for F0X"
+        depends on FIH_PROJECT_F0X
+        choice
+            prompt "<SAMPLE>Sleect A Customer ID"
+            default ID_0000
+            config ID_0000
+                bool "ID: 0000, Customer: Generic"
+            config ID_0001
+                bool "ID: 0001, Customer: others"
+        endchoice
+
+        config OV5642
+            bool "FIH Sensor ov5642 (YUV 5M)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH OV 5M YUV Sensor with EDOF
+
+        config OV5642AF
+            bool "FIH Sensor ov5642AF (YUV 5M AF)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH OV 5M YUV Sensor with AF
+
+        config OV3642
+            bool "FIH Sensor ov3642 (YUV 3M)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH OV 3M YUV Sensor with EDOF
+
+        config FIH_FLASH_DRIVER_IC_AAT1272
+            bool "AAT1272 Flash Driver"
+            depends on I2C=y && ARCH_MSM && FIH_CONFIG_GROUP
+            default y
+            help
+                AAT1272 Flash Driver
+
+        config FIH_BACKLIGHT_LED_TCA6507
+            bool "TCA6507 backlight led controller"
+            depends on I2C=y && ARCH_MSM && FIH_CONFIG_GROUP
+            default y
+            help
+                Backlight LED Driver
+
+        config FIH_F9xx_GPIO_KEYPAD
+            bool "FIH KEYPAD Driver"
+            depends on FIH_CONFIG_GROUP && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH KEYPAD Driver
+
+        config FIH_BACKLIGHT_LED_MAX8831
+            tristate "Max8831 backlight controller"
+            depends on I2C=y && ARCH_MSM && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH BACKLIGHT Driver
+
+        config FLASH_DRIVER_IC_AAT1272
+            tristate "AAT1272 flash driver ic"
+            depends on I2C=y && ARCH_MSM && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH FLASH Driver
+
+        config INPUT_ECOMPASS
+            bool "E-Compass interface"
+            default y
+            help
+                Say Y here if you want your ecompass to be accessible as char device
+                - /dev/input/ecompass device.
+
+                If unsure, say N.
+
+        config INPUT_LPSENSOR
+            bool "LPsensor interface"
+            default y
+            help
+                Say Y here if you want your gsensor to be accessible as char device
+                - /dev/input/proximitysensor device.
+                If unsure, say N.
+
+                To compile this driver as a module, choose Y here: the
+                module will be called psensor.
+
+        config FIH_ECOMPASS_SENSOR
+            tristate "FIH E-Compass sensor controller"
+            default y
+            help
+		Say Y here if you want to enable FIH sensor driver.	  
+
+        config SENSORS_LPSCM3602
+            tristate "LPSCM3602 controller"
+            depends on ARCH_MSM
+            default y
+            help
+		Say Y here if you want to enable LPSENSOR PSCM3602 driver.	  
+
+       config MINITRACKBALL
+            tristate "Mini-Trackball Driver"
+            default y
+            help
+		Say Y here if you want support for the Mini-Trackball/Jogball
+		device.
+
+       config TOUCHSCREEN_FOCAL_I2C_5202
+            tristate "Focal FT5202 I2C touchscreen"
+            depends on I2C
+            default y
+            help
+		TOUCHSCREEN driver
+
+       config BATTERY_FIH_ZEUS
+            tristate "FIH Zeus battery"
+            depends on SYSFS
+            default y
+            help
+		Say Y to enable support for the battery in FIH Zeus.
+
+
+    endmenu
+
+    # Project configurations for FA3
+    menu "Configurations for FA3"
+        depends on FIH_PROJECT_FA3
+        choice
+            prompt "<SAMPLE>Sleect A Customer ID"
+            default ID_0000
+            config ID_0000
+                bool "ID: 0000, Customer: Generic"
+            config ID_0001
+                bool "ID: 0001, Customer: others"
+        endchoice
+
+        config OV5642
+            bool "FIH Sensor ov5642 (YUV 5M)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH OV 5M YUV Sensor with EDOF
+
+        config OV5642AF
+            bool "FIH Sensor ov5642AF (YUV 5M AF)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH OV 5M YUV Sensor with AF
+
+        config OV3642
+            bool "FIH Sensor ov3642 (YUV 3M)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH OV 3M YUV Sensor with EDOF
+
+        config FIH_FLASH_DRIVER_IC_AAT1272
+            bool "AAT1272 Flash Driver"
+            depends on I2C=y && ARCH_MSM && FIH_CONFIG_GROUP
+            default y
+            help
+                AAT1272 Flash Driver
+
+        config FIH_BACKLIGHT_LED_TCA6507
+            bool "TCA6507 backlight led controller"
+            depends on I2C=y && ARCH_MSM && FIH_CONFIG_GROUP
+            default y
+            help
+                Backlight LED Driver
+
+        config FIH_F9xx_GPIO_KEYPAD
+            bool "FIH KEYPAD Driver"
+            depends on FIH_CONFIG_GROUP && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH KEYPAD Driver
+
+        config FIH_BACKLIGHT_LED_MAX8831
+            tristate "Max8831 backlight controller"
+            depends on I2C=y && ARCH_MSM && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH BACKLIGHT Driver
+
+        config FLASH_DRIVER_IC_AAT1272
+            tristate "AAT1272 flash driver ic"
+            depends on I2C=y && ARCH_MSM && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH FLASH Driver
+
+        config INPUT_ECOMPASS
+            bool "E-Compass interface"
+            default y
+            help
+                Say Y here if you want your ecompass to be accessible as char device
+                - /dev/input/ecompass device.
+
+                If unsure, say N.
+
+        config INPUT_LPSENSOR
+            bool "LPsensor interface"
+            default y
+            help
+                Say Y here if you want your gsensor to be accessible as char device
+                - /dev/input/proximitysensor device.
+                If unsure, say N.
+
+                To compile this driver as a module, choose Y here: the
+                module will be called psensor.
+
+        config FIH_ECOMPASS_SENSOR
+            tristate "FIH E-Compass sensor controller"
+            default y
+            help
+		Say Y here if you want to enable FIH sensor driver.	  
+
+        config SENSORS_LPSCM3602
+            tristate "LPSCM3602 controller"
+            depends on ARCH_MSM
+            default y
+            help
+		Say Y here if you want to enable LPSENSOR PSCM3602 driver.	  
+
+       config MINITRACKBALL
+            tristate "Mini-Trackball Driver"
+            default y
+            help
+		Say Y here if you want support for the Mini-Trackball/Jogball
+		device.
+
+       config TOUCHSCREEN_FOCAL_I2C_5202
+            tristate "Focal FT5202 I2C touchscreen"
+            depends on I2C
+            default n
+            help
+		TOUCHSCREEN driver
+
+       config BATTERY_FIH_ZEUS
+            tristate "FIH Zeus battery"
+            depends on SYSFS
+            default y
+            help
+		Say Y to enable support for the battery in FIH Zeus.
+    endmenu
+
+    # Project configurations for FM6
+    menu "Configurations for FM6"
+        depends on FIH_PROJECT_FM6
+        choice
+            prompt "<SAMPLE>Sleect A Customer ID"
+            default ID_0000
+            config ID_0000
+                bool "ID: 0000, Customer: Generic"
+            config ID_0001
+                bool "ID: 0001, Customer: others"
+        endchoice
+
+        config OV3640
+            bool "FIH Sensor ov3640 (YUV 3M)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH OV 3M YUV Sensor
+
+        config MT9T112
+            bool "FIH Sensor mt9t112 (YUV 3M)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH Aptina 3M YUV Sensor
+
+        config OV7690
+            bool "FIH Sensor ov7690 (YUV VGA)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH OV VGA YUV Sensor
+
+        config HM0356
+            bool "FIH Sensor hm0356 (YUV VGA)"
+            depends on MSM_CAMERA && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH HM VGA YUV Sensor
+
+        config BATTERY_FIH_ZEUS
+            tristate "FIH Zeus battery"
+            depends on SYSFS
+            default y
+            help
+            Say Y to enable support for the battery in FIH Zeus.
+
+        config TOUCHSCREEN_PANJIT_I2C
+            bool "TOUCHSCREEN_PANJIT_I2C"
+            default y
+            help
+                TOUCHSCREEN_PANJIT_I2C
+
+        config FB_MSM_LCDC_INNOLUX_7D_PANEL
+            bool "FB_MSM_LCDC_INNOLUX_7D_PANEL"
+            select FB_MSM_LCDC_PANEL
+            default y
+            help
+                FB_MSM_LCDC_INNOLUX_7D_PANEL
+
+        config INPUT_ECOMPASS
+            bool "E-Compass interface"
+            default y
+            help
+                Say Y here if you want your ecompass to be accessible as char device
+                - /dev/input/ecompass device.
+
+                If unsure, say N.
+
+        config INPUT_LPSENSOR
+            bool "LPsensor interface"
+            default y
+            help
+                Say Y here if you want your gsensor to be accessible as char device
+                - /dev/input/proximitysensor device.
+                If unsure, say N.
+
+                To compile this driver as a module, choose Y here: the
+                module will be called psensor.
+
+        config FIH_ECOMPASS_SENSOR
+            tristate "FIH E-Compass sensor controller"
+            default y
+            help
+		Say Y here if you want to enable FIH sensor driver.	  
+
+        config SENSORS_LPSCM3602
+            tristate "LPSCM3602 controller"
+            depends on ARCH_MSM
+            default y
+            help
+		Say Y here if you want to enable LPSENSOR PSCM3602 driver.	  
+
+        config FIH_F9xx_GPIO_KEYPAD
+            bool "FIH KEYPAD Driver"
+            depends on FIH_CONFIG_GROUP && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH KEYPAD Driver
+
+        config FIH_BACKLIGHT_LED_MAX8831
+            tristate "Max8831 backlight controller"
+            depends on I2C=y && ARCH_MSM && FIH_CONFIG_GROUP
+            default y
+            help
+                FIH BACKLIGHT Driver
+
+       config BATTERY_FIH_ZEUS
+            tristate "FIH Zeus battery"
+            depends on SYSFS
+            default y
+            help
+		Say Y to enable support for the battery in FIH Zeus.
+
+    endmenu
+
+    # Project configurations for FN6
+    menu "Configurations for FN6"
+        depends on FIH_PROJECT_FN6
+    endmenu
+
+
+    menu "FIH Debug"
+        depends on FIH_CONFIG_GROUP
+        config FIH_SUSPEND_RESUME_LOG
+            bool "FIH LOG about SUSPEND/RESUME"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Enable suspend and resume log support
+
+        config FIH_PANIC2MODEM
+            bool "FIH Panic Infroms Modem"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                When panic, informs modem
+
+        config FIH_PANIC_LOG
+            bool "FIH Panic Kernel Log"
+            depends on FIH_CONFIG_GROUP
+            default n
+            help
+                When panic, dump kernel log to flash/SD
+
+        config FIH_EFS2SD
+            bool "FIH EFS2SD"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Get EFS Log, and put them in /data/efslog
+        
+        config FIH_LAST_ALOG
+            bool "FIH LAST ALOG"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Enable/Disable Last Alog         
+        config FIH_GPIO_DEBUG_FS
+            bool "FIH GPIO DebugFS"
+            depends on FIH_CONFIG_GROUP
+            default y
+            help
+                Enable GPIO debug file system          
+    endmenu
+
+    config FIH_REMOVE_SERIAL_DYNAMICALLY
+            bool "FIH Remove msm_serial dynamically"
+            depends on FIH_BUILDTYPE_DEBUG
+            default y
+            help
+                Register console and serial depending on key
+
+endif
+
